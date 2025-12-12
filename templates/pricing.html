@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Pricing — Quran Academy{% endblock %}
+{% block content %}
+
+<div class="flex items-center justify-between">
+  <h1 class="text-2xl font-bold">Pricing Plans</h1>
+  <div x-data="{ yearly:false }" class="flex items-center gap-3">
+    <span class="text-sm text-slate-600">Monthly</span>
+    <button @click="yearly = !yearly" :class="yearly ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700'" class="px-3 py-1 rounded-md">
+      <span x-text="yearly ? 'Yearly' : 'Monthly'"></span>
+    </button>
+  </div>
+</div>
+
+<div class="grid md:grid-cols-3 gap-6 mt-6">
+  {% for plan in plans %}
+  <div class="card p-6 relative">
+    {% if plan.most_popular %}
+    <div class="absolute -top-4 right-4 bg-amber-400 text-white px-3 py-1 rounded-full text-xs">Most popular</div>
+    {% endif %}
+    <h3 class="font-semibold text-xl">{{ plan.title }}</h3>
+    <p class="text-sm text-slate-600 mt-2">{{ plan.description }}</p>
+    <div class="mt-4">
+      <div class="text-3xl font-bold" x-data>{% if plan.price_monthly %}${{ plan.price_monthly }}{% else %}$0{% endif %}</div>
+      <div class="text-sm text-slate-500">per month</div>
+    </div>
+    <a href="/booking/?plan={{ plan.id }}" class="btn-primary mt-6 block text-center">Get Started</a>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

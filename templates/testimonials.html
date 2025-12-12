@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 class="fw-bold mb-4">Student Testimonials</h1>
+
+<div class="row">
+    {% for t in testimonials %}
+    <div class="col-md-4">
+        <div class="card shadow-sm p-3 mb-3">
+            <p>"{{ t.message }}"</p>
+            <strong>- {{ t.name }}</strong>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

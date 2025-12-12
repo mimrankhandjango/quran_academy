@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 class="fw-bold mb-4">About the Teacher</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <img src="{{ teacher.photo.url }}" class="img-fluid rounded shadow">
+    </div>
+    <div class="col-md-8">
+        <h3>{{ teacher.name }}</h3>
+        <p><strong>Experience:</strong> {{ teacher.experience }} years</p>
+        <p>{{ teacher.bio }}</p>
+
+        <h5 class="fw-bold mt-3">Certifications:</h5>
+        <ul>
+            {% for c in teacher.certifications.all %}
+            <li>{{ c.title }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+{% endblock %}

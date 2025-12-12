@@ -1,0 +1,47 @@
+{% extends 'academy/base.html' %}
+{% block title %}{{ course.title }} — Quran Academy{% endblock %}
+{% block content %}
+
+<div class="grid md:grid-cols-3 gap-6">
+  <div class="md:col-span-2">
+    <img src="{{ course.image.url if course.image else static('academy/images/course-tajweed.jpg') }}" class="w-full h-80 object-cover rounded-2xl shadow-lg">
+    <div class="mt-6">
+      <h1 class="text-2xl font-bold">{{ course.title }}</h1>
+      <p class="mt-3 text-slate-600">{{ course.description }}</p>
+    </div>
+
+    <div class="mt-6 card">
+      <h4 class="font-semibold">Curriculum</h4>
+      <ul class="mt-3 space-y-2 text-sm text-slate-600">
+        {% for lesson in course.lessons.all %}
+          <li>{{ lesson.order }}. {{ lesson.title }}</li>
+        {% empty %}
+          <li>No lessons added yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <aside class="space-y-4">
+    <div class="card p-4">
+      <div class="flex items-center gap-3">
+        <img src="{{ course.teacher.photo.url if course.teacher and course.teacher.photo else static('academy/images/teacher-placeholder.jpg') }}" class="w-12 h-12 rounded-full object-cover">
+        <div>
+          <div class="font-semibold">{{ course.teacher.full_name if course.teacher else 'Teacher' }}</div>
+          <div class="text-sm text-slate-500">{{ course.teacher.experience_years }} years</div>
+        </div>
+      </div>
+      <div class="mt-4">
+        <div class="text-sm text-slate-600">Price: <span class="font-semibold">${{ course.price_per_month|default:course.price }}</span></div>
+        <a href="/booking/?course={{ course.pk }}" class="btn-primary mt-4 block text-center">Book This Course</a>
+      </div>
+    </div>
+
+    <div class="card p-4">
+      <h4 class="font-semibold">Schedule</h4>
+      <p class="text-sm text-slate-600 mt-2">Flexible slots. Confirmed after payment.</p>
+    </div>
+  </aside>
+</div>
+
+{% endblock %}

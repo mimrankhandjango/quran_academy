@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 class="fw-bold mb-4">Your Learning Progress</h1>
+
+<table class="table table-bordered">
+    <thead class="table-success">
+        <tr>
+            <th>Lesson</th>
+            <th>Status</th>
+            <th>Notes</th>
+            <th>Recording</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for p in progress %}
+        <tr>
+            <td>{{ p.title }}</td>
+            <td>{{ p.status }}</td>
+            <td>{{ p.notes }}</td>
+            <td>
+                {% if p.recording %}
+                <a href="{{ p.recording.url }}" class="btn btn-sm btn-primary">Play</a>
+                {% else %}
+                No recording
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

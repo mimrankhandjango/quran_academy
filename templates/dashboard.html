@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — Quran Academy{% endblock %}
+{% block content %}
+
+<div class="grid md:grid-cols-3 gap-6">
+  <div class="md:col-span-2 space-y-6">
+    <div class="card p-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="font-semibold">Active Courses</h3>
+          <div class="text-sm text-slate-500">Progress overview</div>
+        </div>
+        <div>
+          <a href="/courses/" class="text-sm text-indigo-600">Explore more</a>
+        </div>
+      </div>
+
+      <div class="mt-4 space-y-3">
+        {% for p in progress %}
+        <div class="p-3 rounded-md bg-white/60 border">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="font-semibold">{{ p.course.title }}</div>
+              <div class="text-sm text-slate-600">Last update: {{ p.last_update }}</div>
+            </div>
+            <div class="text-sm">{{ p.percent_complete }}%</div>
+          </div>
+          <div class="w-full bg-slate-100 h-2 rounded mt-3 overflow-hidden">
+            <div class="h-2 bg-emerald-500" style="width: {{ p.percent_complete }}%"></div>
+          </div>
+        </div>
+        {% empty %}
+          <div class="text-sm text-slate-500">No active courses.</div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="card p-4">
+      <h3 class="font-semibold">Recent Lessons & Recordings</h3>
+      <div class="mt-3 space-y-3">
+        {% for lesson in recent_lessons %}
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="font-medium">{{ lesson.title }}</div>
+            <div class="text-sm text-slate-500">{{ lesson.course.title }}</div>
+          </div>
+          <div>
+            {% if lesson.recording %}
+            <a href="{{ lesson.recording.url }}" class="btn-outline">Watch</a>
+            {% else %}
+            <span class="text-sm text-slate-500">No recording</span>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <aside class="space-y-6">
+    <div class="card p-4">
+      <h4 class="font-semibold">Upcoming Bookings</h4>
+      <ul class="mt-3 text-sm text-slate-600 space-y-2">
+        {% for b in upcoming_bookings %}
+        <li>{{ b.course.title }} — {{ b.slot_datetime }}</li>
+        {% empty %}<li>No upcoming bookings.</li>{% endfor %}
+      </ul>
+    </div>
+
+    <div class="card p-4">
+      <h4 class="font-semibold">Account</h4>
+      <p class="text-sm text-slate-600">Email: {{ user.email }}</p>
+      <a href="/logout/" class="btn-outline mt-3 block text-center">Log out</a>
+    </div>
+  </aside>
+</div>
+
+{% endblock %}

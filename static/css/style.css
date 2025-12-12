@@ -1,0 +1,125 @@
+/* style.css — Quran Academy theme
+   - Light & dark theme via .theme-light / .theme-dark on body
+   - Accessible font sizes and responsive helpers
+*/
+
+/* default CSS reset basics */
+* { box-sizing: border-box; }
+html,body { height:100%; margin:0; padding:0; font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+
+/* Theme variables — light */
+:root{
+  --accent: #0b6e4f;         /* green accent */
+  --muted: #6b7280;
+  --bg: #f8fafb;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted-2: #475569;
+  --shadow: 0 6px 18px rgba(15,23,42,0.06);
+  --border: #e6e9ee;
+  --radius: 12px;
+  --container-max: 1100px;
+}
+
+/* Dark theme overrides */
+body.theme-dark {
+  --accent: #10b981;
+  --muted: #9aa6b2;
+  --bg: #0b1220;
+  --card: #071124;
+  --text: #e6eef8;
+  --muted-2: #b6c2ce;
+  --shadow: 0 6px 24px rgba(2,6,23,0.6);
+  --border: rgba(255,255,255,0.06);
+}
+
+/* Page background and container */
+body {
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+.container { max-width: var(--container-max); margin: 0 auto; padding: 1rem; }
+
+/* Top bar */
+.topbar { border-bottom: 1px solid var(--border); }
+
+/* Navbar override */
+.navbar { background: transparent; }
+.navbar .navbar-brand { color: var(--accent); }
+.navbar .nav-link { color: var(--muted-2); margin-left: 0.5rem; }
+
+/* Hero */
+.hero-compact { text-align:center; padding: 2rem 0; }
+.hero-compact h1 { font-size: 2rem; margin-bottom: .5rem; font-weight:700; }
+.hero-compact p { color: var(--muted); margin-bottom: 1rem; }
+
+/* Cards */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  padding: 1rem;
+}
+
+/* Buttons */
+.btn-primary, .btn-success {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.btn-outline-success {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Grids & lists */
+.course-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:1rem; }
+@media (max-width: 880px) { .course-grid { grid-template-columns: 1fr; } }
+
+/* testimonial styling */
+.testimonial { background: var(--card); padding: 1rem; border-radius: 10px; }
+
+/* forms */
+.form-label { font-weight:600; color:var(--muted-2); }
+input, textarea, select { border:1px solid var(--border); background:transparent; color:var(--text); padding: .6rem .8rem; border-radius:8px; }
+
+/* Footer */
+.site-footer { background: transparent; border-top:1px solid var(--border); color: var(--muted); }
+
+/* Accessibility helpers */
+h1,h2,h3,h4 { line-height:1.15; }
+body { font-size: 16px; }
+
+/* small utilities */
+.muted { color: var(--muted); }
+.text-accent { color: var(--accent); }
+
+/* subtle image fit */
+.img-cover { width:100%; height:220px; object-fit:cover; border-radius:8px; }
+
+/* small screens */
+@media (max-width: 576px) {
+  .navbar .nav-link { padding: .3rem .5rem; }
+  .hero-compact h1 { font-size:1.4rem; }
+}
+
+/* NAVBAR (Merged with your theme system) */
+.nav-link {
+  color: var(--muted-2);
+  font-weight: 500;
+  transition: 0.25s;
+}
+.nav-link:hover {
+  color: var(--accent);
+}
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+.btn-primary:hover {
+  opacity: .9;
+}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 class="fw-bold mb-4">Learning Resources & Blog</h1>
+
+<ul class="list-group">
+    {% for post in posts %}
+    <li class="list-group-item">
+        <h4 class="fw-bold">
+            <a href="/blog/{{ post.slug }}/">{{ post.title }}</a>
+        </h4>
+        <p>{{ post.summary }}</p>
+    </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

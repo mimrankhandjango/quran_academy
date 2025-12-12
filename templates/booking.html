@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% block title %}Book — Quran Academy{% endblock %}
+{% block content %}
+
+<div x-data="bookingWizard()" class="max-w-3xl mx-auto space-y-6">
+  <div class="flex items-center gap-4">
+    <template x-for="(step, i) in steps" :key="i">
+      <div class="flex items-center gap-2">
+        <div :class="i === current ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600' " class="w-8 h-8 rounded-full flex items-center justify-center text-sm" x-text="i+1"></div>
+        <div class="text-sm" x-text="step"></div>
+      </div>
+    </template>
+  </div>
+
+  <!-- Step 1: student info -->
+  <div x-show="current === 0" x-transition>
+    <h3 class="font-semibold">Student Details</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+      <input x-model="form.name" placeholder="Full name" class="input" />
+      <input x-model="form.age" type="number" placeholder="Age" class="input" />
+      <select x-model="form.course" class="input">
+        <option value="">Select course</option>
+        {% for c in courses %}<option value="{{ c.pk }}">{{ c.title }}</option>{% endfor %}
+      </select>
+      <select x-model="form.slot" class="input">
+        <option value="">Select slot</option>
+        {% for s in slots %}<option value="{{ s.pk }}">{{ s.start_time }} - {{ s.end_time }}</option>{% endfor %}
+      </select>
+    </div>
+  </div>
+
+  <!-- Step 2: payment / contact -->
+  <div x-show="current === 1" x-transition>
+    <h3 class="font-semibold">Contact & Payment</h3>
+    <div class="mt-3 grid grid-cols-1 gap-3">
+      <input x-model="form.email" type="email" placeholder="Email" class="input" />
+      <input x-model="form.phone" placeholder="Phone (WhatsApp)" class="input" />
+      <select x-model="form.payment" class="input">
+        <option value="stripe">Stripe</option>
+        <option value="paypal">PayPal</option>
+        <option value="bank">Bank transfer</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Step 3: review -->
+  <div x-show="current === 2" x-transition>
+    <h3 class="font-semibold">Review & Confirm</h3>
+    <div class="card mt-3 p-4">
+      <p><strong>Name:</strong> <span x-text="form.name"></span></p>
+      <p><strong>Age:</strong> <span x-text="form.age"></span></p>
+      <p><strong>Course:</strong> <span x-text="selectedCourseName()"></span></p>
+      <p><strong>Slot:</strong> <span x-text="selectedSlotText()"></span></p>
+      <p><strong>Payment:</strong> <span x-text="form.payment"></span></p>
+    </div>
+  </div>
+
+  <!-- actions -->
+  <div class="flex items-center gap-3">
+    <button @click="prev()" class="btn-outline" :disabled="current === 0">Back</button>
+    <button @click="next()" x-show="current < steps.length-1" class="btn-primary">Next</button>
+    <button @click="submit()" x-show="current === steps.length-1" class="btn-primary">Confirm Booking</button>
+  </div>
+
+  <div x-show="message" class="mt-4 text-sm text-green-600" x-text="message"></div>
+</div>
+
+<script>
+function bookingWizard(){
+  return {
+    steps: ['Details', 'Contact & Payment', 'Review'],
+    current: 0,
+
+    form: {
+      name: '',
+      age: '',
+      course: '',
+      slot: '',
+      email: '',
+      phone: '',
+      payment: 'stripe'
+    },
+
+    message: '',
+
+    next(){
+      if(this.current < this.steps.length - 1)
+        this.current++;
+    },
+
+    prev(){
+      if(this.current > 0)
+        this.current--;
+    },
+
+    // fixed function - now uses x-model data, not broken querySelector()
+    selectedCourseName(){
+      let id = this.form.course;
+      if(!id) return '';
+      const el = document.querySelector(`select[x-model='form.course'] option[value='${id}']`);
+      return el ? el.textContent : '';
+    },
+
+    selectedSlotText(){
+      let id = this.form.slot;
+      if(!id) return '';
+      const el = document.querySelector(`select[x-model='form.slot'] option[value='${id}']`);
+      return el ? el.textContent : '';
+    },
+
+    submit(){
+
+      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+      fetch('{% url "book_course" %}', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify(this.form)
+      })
+      .then(r => r.json())
+      .then(data => {
+        this.message = "Booking completed successfully! You will receive confirmation shortly.";
+        this.current = 0;                 // reset wizard
+        this.form = { name:'', age:'', course:'', slot:'', email:'', phone:'', payment:'stripe' };
+      })
+      .catch(e => {
+        this.message = "Something went wrong. Try again.";
+      });
+    }
+  }
+}
+</script>
+
+{% endblock %}

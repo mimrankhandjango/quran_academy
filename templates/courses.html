@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block title %}Courses — Quran Academy{% endblock %}
+
+{% block content %}
+
+<div class="flex items-center justify-between">
+  <h1 class="text-2xl font-bold">Courses</h1>
+
+  <div class="flex items-center gap-2">
+    <!-- Filter Form -->
+    <form method="get" class="flex items-center gap-2">
+      <input name="q" type="search" placeholder="Search courses" value="{{ request.GET.q }}" class="px-3 py-2 border rounded-md text-sm">
+      <select name="age" class="px-3 py-2 border rounded-md text-sm">
+        <option value="">All ages</option>
+        <option value="4-7">4-7</option>
+        <option value="8-12">8-12</option>
+        <option value="13-18">13-18</option>
+        <option value="adult">Adult</option>
+      </select>
+      <button class="btn-outline px-4">Filter</button>
+    </form>
+
+    <!-- Add Course Button -->
+    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCourseModal">
+        + Add Course
+    </button>
+  </div>
+</div>
+
+<!-- Courses Grid -->
+<div class="grid md:grid-cols-3 gap-6 mt-6" id="course-grid">
+  {% for course in courses %}
+    {% include 'course_card.html' with course=course %}
+  {% endfor %}
+</div>
+
+<!-- Add Course Modal -->
+<div class="modal fade" id="addCourseModal" tabindex="-1" aria-labelledby="addCourseModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addCourseModalLabel">Add New Course</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="add-course-form">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="courseTitle" class="form-label">Course Title</label>
+    <input type="text" class="form-control" id="courseTitle" name="title" required>
+  </div>
+  <div class="mb-3">
+    <label for="courseDescription" class="form-label">Description</label>
+    <textarea class="form-control" id="courseDescription" name="description" rows="3" required></textarea>
+  </div>
+  <div class="mb-3">
+    <label for="courseAgeGroup" class="form-label">Age Group</label>
+    <select id="courseAgeGroup" name="age_group" class="form-control" required>
+      <option value="">Select Age Group</option>
+      <option value="4-7">4-7</option>
+      <option value="8-12">8-12</option>
+      <option value="13-18">13-18</option>
+      <option value="adult">Adult</option>
+    </select>
+  </div>
+  <div class="mb-3">
+    <label for="courseLevel" class="form-label">Level</label>
+    <input type="text" class="form-control" id="courseLevel" name="level">
+  </div>
+  <div class="mb-3">
+    <label for="courseDurationWeeks" class="form-label">Duration (weeks)</label>
+    <input type="number" class="form-control" id="courseDurationWeeks" name="duration_weeks" value="4" required>
+  </div>
+  <div class="mb-3">
+    <label for="coursePrice" class="form-label">Price per Month ($)</label>
+    <input type="number" step="0.01" class="form-control" id="coursePrice" name="price_per_month" value="0" required>
+  </div>
+  <button type="submit" class="btn btn-success">Add Course</button>
+</form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('add-course-form');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    const formData = new FormData(form);
+    fetch("{% url 'add_course_ajax' %}", {
+      method: 'POST',
+      headers: {'X-CSRFToken': csrfToken},
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        const grid = document.getElementById('course-grid');
+        const cardHTML = `
+          <div class="card shadow-sm p-3 mb-3">
+            <h4>${data.course.title}</h4>
+            <p>${data.course.description}</p>
+            <p><strong>Age Group:</strong> ${data.course.age_group}</p>
+            <p><strong>Level:</strong> ${data.course.level}</p>
+            <p><strong>Duration:</strong> ${data.course.duration_weeks} weeks</p>
+            <p><strong>Price:</strong> $${data.course.price_per_month}</p>
+            <a href="/booking/" class="btn btn-success">Enroll Now</a>
+          </div>
+        `;
+        grid.insertAdjacentHTML('afterbegin', cardHTML);
+
+        form.reset();
+        const modalEl = document.getElementById('addCourseModal');
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.hide();
+      } else {
+        alert('Error adding course.');
+      }
+    });
+  });
+});
+
+</script>
+{% endblock %}

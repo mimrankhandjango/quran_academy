@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Contact — Quran Academy{% endblock %}
+{% block content %}
+<div class="grid md:grid-cols-2 gap-6">
+  <div>
+    <h2 class="text-2xl font-bold">Get in touch</h2>
+    <p class="text-slate-600 mt-2">Questions about classes, scheduling or group bookings? Send us a message.</p>
+
+    <form method="post" action="/contact/">
+      {% csrf_token %}
+      <div class="mt-4 grid gap-3">
+        <input name="name" class="input" placeholder="Full name" required>
+        <input name="email" type="email" class="input" placeholder="Email" required>
+        <input name="phone" class="input" placeholder="WhatsApp / Phone">
+        <textarea name="message" class="input h-36" placeholder="Your message" required></textarea>
+        <button class="btn-primary">Send Message</button>
+      </div>
+    </form>
+  </div>
+
+  <div>
+    <h3 class="font-semibold">Contact Details</h3>
+    <p class="mt-2 text-sm text-slate-600">WhatsApp: +92-318-9956192</p>
+    <p class="mt-2 text-sm text-slate-600">Email: molana.m.imran@gmail.com</p>
+    <div class="mt-6 card p-4">
+      <h4 class="font-semibold">Office Hours</h4>
+      <p class="text-sm text-slate-600 mt-2">Mon–Sat: 9:00 — 21:00 (PKT)</p>
+    </div>
+  </div>
+</div>
+
+<!-- floating whatsapp CTA -->
+<a href="https://wa.me/923189956192" target="_blank" class="fixed right-6 bottom-6 bg-emerald-500 rounded-full w-14 h-14 flex items-center justify-center shadow-lg text-white">
+  <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><path d="M..." fill="currentColor"/></svg>
+</a>
+{% endblock %}

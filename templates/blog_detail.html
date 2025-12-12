@@ -1,0 +1,9 @@
+{% extends 'academy/base.html' %}
+{% block title %}{{ post.title }} — Quran Academy{% endblock %}
+{% block content %}
+<article class="prose max-w-none">
+  <h1>{{ post.title }}</h1>
+  <p class="text-sm text-slate-500">Published: {{ post.created_at }}</p>
+  <div class="mt-6">{{ post.content|safe }}</div>
+</article>
+{% endblock %}
