@@ -1,0 +1,6 @@
+Django>=4.2
+gunicorn
+whitenoise
+pillow
+psycopg2-binary
+djangorestframework
